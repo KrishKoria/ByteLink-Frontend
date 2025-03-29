@@ -44,11 +44,7 @@ export function LoginForm({
 
   return (
     <>
-      <SocialAuthButtons
-        onSocialAuth={onSocialLogin}
-        isLoading={isLoading}
-        actionText="Sign in"
-      />
+      <SocialAuthButtons onSocialAuth={onSocialLogin} isLoading={isLoading} />
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
