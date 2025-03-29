@@ -1,8 +1,10 @@
 import { History, BarChart3, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export function AccountBenefitsSection() {
+  const router = useRouter();
   return (
     <section
       id="account-benefits"
@@ -58,7 +60,12 @@ export function AccountBenefitsSection() {
             </div>
 
             <div className="flex justify-center lg:justify-start">
-              <Button variant="outline">Create Free Account</Button>
+              <Button
+                variant="outline"
+                onClick={() => router.push("/auth/signup")}
+              >
+                Create Free Account
+              </Button>
             </div>
           </div>
 

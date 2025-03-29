@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ToggleSwitch";
+import { ThemeToggle } from "@/components/theming/ToggleSwitch";
+import { useRouter } from "next/navigation";
 
 export function Header() {
+  const router = useRouter();
   return (
     <header className="border-b">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -30,10 +32,18 @@ export function Header() {
             API
           </a>
           <ThemeToggle />
-          <Button variant="ghost" size="sm">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push("/auth/login")}
+          >
             Log in
           </Button>
-          <Button size="sm" variant="outline">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => router.push("/auth/signup")}
+          >
             Sign up
           </Button>
         </nav>

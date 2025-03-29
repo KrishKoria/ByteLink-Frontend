@@ -1,15 +1,14 @@
 "use client";
 
+import { AccountBenefitsSection } from "@/components/landingpage/AccountBenefits";
+import { APISection } from "@/components/landingpage/API";
+import { CTASection } from "@/components/landingpage/CTA";
+import { FeaturesSection } from "@/components/landingpage/Features";
+import { Footer } from "@/components/landingpage/Footer";
+import { Header } from "@/components/landingpage/Header";
+import { HeroSection } from "@/components/landingpage/Hero";
+import { HowItWorksSection } from "@/components/landingpage/HowItWorks";
 import { useState } from "react";
-import { Header } from "@/components/Header";
-
-import { Footer } from "@/components/Footer";
-import { HeroSection } from "@/components/Hero";
-import { HowItWorksSection } from "@/components/HowItWorks";
-import { FeaturesSection } from "@/components/Features";
-import { APISection } from "@/components/API";
-import { AccountBenefitsSection } from "@/components/AccountBenefits";
-import { CTASection } from "@/components/CTA";
 
 export default function Home() {
   const [url, setUrl] = useState("");
