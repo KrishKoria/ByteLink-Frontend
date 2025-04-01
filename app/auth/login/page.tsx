@@ -32,7 +32,6 @@ export default function LoginPage() {
   const handleSocialLogin = (provider: string) => {
     setIsLoading(true);
 
-    // Simulate social auth
     console.log(`Logging in with ${provider}`);
     setTimeout(() => {
       setIsLoading(false);

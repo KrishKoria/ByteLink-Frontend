@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Copy, CheckCircle } from "lucide-react";
+import { shortenUrlAction } from "@/actions/shorten";
 
 interface URLShortenerProps {
   url: string;
@@ -19,8 +20,8 @@ interface URLShortenerProps {
   setIsLoading: (isLoading: boolean) => void;
   copied: boolean;
   setCopied: (copied: boolean) => void;
-  shortenUrl: (e: React.FormEvent) => Promise<void>;
   copyToClipboard: () => void;
+  onError: (error: Error) => void;
 }
 
 export function URLShortener({
@@ -29,10 +30,24 @@ export function URLShortener({
   shortUrl,
   setShortUrl,
   isLoading,
+  setIsLoading,
   copied,
-  shortenUrl,
   copyToClipboard,
+  onError,
 }: URLShortenerProps) {
+  async function handleShortenUrl(formData: FormData) {
+    setIsLoading(true);
+    try {
+      const result = await shortenUrlAction(formData);
+      setShortUrl(result);
+    } catch (error) {
+      onError(
+        error instanceof Error ? error : new Error("Failed to shorten URL")
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }
   return (
     <Card className="border-2 shadow-lg">
       <CardHeader className="pb-2">
@@ -43,9 +58,10 @@ export function URLShortener({
       </CardHeader>
       <CardContent>
         {!shortUrl ? (
-          <form onSubmit={shortenUrl} className="space-y-4">
+          <form action={handleShortenUrl} className="space-y-4">
             <Input
               type="url"
+              name="url"
               placeholder="https://example.com/very/long/url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
