@@ -36,11 +36,16 @@ export function OTPInput() {
         router.push("/");
       } else {
         console.error("Verification incomplete:", completeSignUp);
-        setError("Verification failed. Please try again.");
+        setError(new Error("Verification failed. Please try again.").message);
       }
-    } catch (err: any) {
-      console.error("Verification error:", err);
-      setError(err);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error("Verification error:", err);
+        setError(err.message);
+      } else {
+        console.error("Unexpected error:", err);
+        setError(new Error("An unexpected error occurred.").message);
+      }
     } finally {
       setIsLoading(false);
     }

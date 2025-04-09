@@ -53,11 +53,16 @@ export function SignupForm() {
         router.push("/");
       } else {
         console.error("Signup incomplete:", result);
-        setError("Signup incomplete. Please try again.");
+        setError(new Error("Signup incomplete. Please try again.").message);
       }
-    } catch (error: any) {
-      console.error("Signup error:", error);
-      setError(error);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Signup error:", error);
+        setError(error.message);
+      } else {
+        console.error("Unexpected error:", error);
+        setError(new Error("An unexpected error occurred.").message);
+      }
     } finally {
       setIsLoading(false);
     }
