@@ -36,7 +36,7 @@ export function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-background -z-10"></div>
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-10">
-          {error && <ErrorAlert error={error} />}
+          {error && <ErrorAlert error={error.message} />}
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl mb-6">
             Shorten URLs <span className="text-primary">instantly</span>
           </h1>
