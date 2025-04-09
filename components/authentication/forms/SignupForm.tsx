@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-
 import { Separator } from "@/components/ui/separator";
 import { SocialAuthButtons } from "../SocialAuth";
 import { PasswordInput } from "../PasswordInput";
 import { useRouter } from "next/navigation";
 import { useSignUp } from "@clerk/nextjs";
+import { ErrorAlert } from "@/components/miscellanous/ErrorAlert";
+import { OTPInput } from "../OTPInput";
 
 export function SignupForm() {
   const router = useRouter();
@@ -18,6 +19,8 @@ export function SignupForm() {
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [verify, setVerify] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -27,6 +30,7 @@ export function SignupForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
     try {
       const result = await signUp?.create({
@@ -34,34 +38,41 @@ export function SignupForm() {
         emailAddress: formData.email,
         password: formData.password,
       });
+
       if (
         result?.status === "missing_requirements" &&
         result?.unverifiedFields.includes("email_address")
       ) {
-        await signUp?.prepareEmailAddressVerification();
+        await signUp?.prepareEmailAddressVerification({
+          strategy: "email_code",
+        });
         console.log("Email verification sent. Please check your inbox.");
-      }
-      if (result?.status === "complete") {
+        setVerify(true);
+      } else if (result?.status === "complete") {
         console.log("Signup successful:", result);
         router.push("/");
       } else {
         console.error("Signup incomplete:", result);
+        setError("Signup incomplete. Please try again.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Signup error:", error);
+      setError(error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSocialSignup = (provider: string) => {
-    console.log(`Social signup with ${provider} is not implemented yet.`);
-  };
+  if (verify) {
+    return <OTPInput />;
+  }
 
   return (
     <>
       <SocialAuthButtons
-        onSocialAuth={handleSocialSignup}
+        onSocialAuth={(provider) =>
+          console.log(`Social signup with ${provider} is not implemented yet.`)
+        }
         isLoading={isLoading}
       />
 
@@ -110,7 +121,7 @@ export function SignupForm() {
           placeholder="Create a password"
         />
 
-        <div id="clerk-captcha"></div>
+        {error && <ErrorAlert error={error} />}
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? "Creating account..." : "Create account"}
