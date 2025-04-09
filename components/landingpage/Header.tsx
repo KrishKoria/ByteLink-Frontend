@@ -2,6 +2,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theming/ToggleSwitch";
 import { useRouter } from "next/navigation";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 export function Header() {
   const router = useRouter();
@@ -32,20 +39,21 @@ export function Header() {
             API
           </a>
           <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push("/auth/login")}
-          >
-            Log in
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => router.push("/auth/signup")}
-          >
-            Sign up
-          </Button>
+          <SignedOut>
+            <SignInButton>
+              <Button variant={"ghost"} size={"sm"}>
+                Login
+              </Button>
+            </SignInButton>
+            <SignUpButton>
+              <Button variant={"outline"} size={"sm"}>
+                Sign Up
+              </Button>
+            </SignUpButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
         </nav>
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />

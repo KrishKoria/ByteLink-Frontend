@@ -6,27 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SocialAuthButtons } from "../SocialAuth";
 import { PasswordInput } from "../PasswordInput";
+import { useRouter } from "next/navigation";
+import { useSignUp } from "@clerk/nextjs";
 
-interface SignupFormProps {
-  onSubmit: (data: {
-    name: string;
-    email: string;
-    password: string;
-  }) => Promise<void>;
-  onSocialSignup: (provider: string) => void;
-  isLoading: boolean;
-}
-
-export function SignupForm({
-  onSubmit,
-  onSocialSignup,
-  isLoading,
-}: SignupFormProps) {
+export function SignupForm() {
+  const router = useRouter();
+  const { signUp } = useSignUp();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,12 +26,44 @@ export function SignupForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit(formData);
+    setIsLoading(true);
+
+    try {
+      const result = await signUp?.create({
+        firstName: formData.name,
+        emailAddress: formData.email,
+        password: formData.password,
+      });
+      if (
+        result?.status === "missing_requirements" &&
+        result?.unverifiedFields.includes("email_address")
+      ) {
+        await signUp?.prepareEmailAddressVerification();
+        console.log("Email verification sent. Please check your inbox.");
+      }
+      if (result?.status === "complete") {
+        console.log("Signup successful:", result);
+        router.push("/");
+      } else {
+        console.error("Signup incomplete:", result);
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSocialSignup = (provider: string) => {
+    console.log(`Social signup with ${provider} is not implemented yet.`);
   };
 
   return (
     <>
-      <SocialAuthButtons onSocialAuth={onSocialSignup} isLoading={isLoading} />
+      <SocialAuthButtons
+        onSocialAuth={handleSocialSignup}
+        isLoading={isLoading}
+      />
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
@@ -55,7 +78,7 @@ export function SignupForm({
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">User Name</Label>
           <Input
             id="name"
             name="name"
@@ -86,6 +109,8 @@ export function SignupForm({
           required
           placeholder="Create a password"
         />
+
+        <div id="clerk-captcha"></div>
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? "Creating account..." : "Create account"}
