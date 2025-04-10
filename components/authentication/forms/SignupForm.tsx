@@ -74,12 +74,7 @@ export function SignupForm() {
 
   return (
     <>
-      <SocialAuthButtons
-        onSocialAuth={(provider) =>
-          console.log(`Social signup with ${provider} is not implemented yet.`)
-        }
-        isLoading={isLoading}
-      />
+      <SocialAuthButtons isLoading={isLoading} />
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

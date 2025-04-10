@@ -29,16 +29,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleSocialLogin = (provider: string) => {
-    setIsLoading(true);
-
-    console.log(`Logging in with ${provider}`);
-    setTimeout(() => {
-      setIsLoading(false);
-      router.push("/");
-    }, 1500);
-  };
-
   const footerContent = (
     <div className="text-sm text-center">
       Don&apos;t have an account?{" "}
@@ -66,11 +56,7 @@ export default function LoginPage() {
         description="Choose your preferred sign in method"
         footer={footerContent}
       >
-        <LoginForm
-          onSubmit={handleSubmit}
-          onSocialLogin={handleSocialLogin}
-          isLoading={isLoading}
-        />
+        <LoginForm onSubmit={handleSubmit} isLoading={isLoading} />
       </AuthCard>
     </>
   );

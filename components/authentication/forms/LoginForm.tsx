@@ -13,15 +13,10 @@ interface LoginFormProps {
     password: string;
     rememberMe: boolean;
   }) => Promise<void>;
-  onSocialLogin: (provider: string) => void;
   isLoading: boolean;
 }
 
-export function LoginForm({
-  onSubmit,
-  onSocialLogin,
-  isLoading,
-}: LoginFormProps) {
+export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -44,7 +39,7 @@ export function LoginForm({
 
   return (
     <>
-      <SocialAuthButtons onSocialAuth={onSocialLogin} isLoading={isLoading} />
+      <SocialAuthButtons isLoading={isLoading} />
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
